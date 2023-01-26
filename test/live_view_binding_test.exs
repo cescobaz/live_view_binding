@@ -2,7 +2,6 @@ defmodule LiveViewBindingTest do
   use ExUnit.Case
   doctest LiveViewBinding
 
-  import Plug.Conn
   import Phoenix.ConnTest
   import Phoenix.LiveViewTest
   @endpoint LiveViewBindingTest.Endpoint
@@ -12,9 +11,13 @@ defmodule LiveViewBindingTest do
       use Phoenix.LiveView
       use LiveViewBinding
 
+      def mount(params, _session, socket) do
+        {:ok, load_all_resources(socket, params)}
+      end
+
       def render(assigns) do
         ~H"""
-        @resource_name
+        <%= @resource_name %>
         """
       end
 
