@@ -4,6 +4,7 @@ defmodule LiveViewBindingTest.TestLiveView do
 
   def render(assigns) do
     ~H"""
+    <div id="params"><%= @params |> URI.encode_query() %></div>
     <div id="entity_a"><%= @entity_a %></div>
     <div id="entity_b"><%= @entity_b %></div>
     <div id="entity_c"><%= @entity_c %></div>
@@ -30,7 +31,7 @@ defmodule LiveViewBindingTest.TestLiveView do
     getter()
 
     mapper(fn socket ->
-      get_current_entity_c(socket) || "mapper(socket)"
+      (get_current_entity_c(socket) || 0) + 1
     end)
   end
 end

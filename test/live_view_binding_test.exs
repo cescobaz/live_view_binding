@@ -16,6 +16,10 @@ defmodule LiveViewBindingTest do
     {:ok, view, _html} = live(conn, path)
 
     assert view
+           |> element("#params")
+           |> render() =~ ">key=value<"
+
+    assert view
            |> element("#entity_a")
            |> render() =~ "loader(key=value,"
 
@@ -25,9 +29,13 @@ defmodule LiveViewBindingTest do
 
     assert view
            |> element("#entity_c")
-           |> render() =~ "mapper(socket)"
+           |> render() =~ ">1<"
 
     send(view.pid, :hello)
+
+    assert view
+           |> element("#params")
+           |> render() =~ ">key=value<"
 
     assert view
            |> element("#entity_a")
@@ -39,6 +47,6 @@ defmodule LiveViewBindingTest do
 
     assert view
            |> element("#entity_c")
-           |> render() =~ "mapper(socket)"
+           |> render() =~ ">2<"
   end
 end
