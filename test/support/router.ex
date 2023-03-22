@@ -4,7 +4,7 @@ defmodule LiveViewBindingTest.Router do
 
   scope "/" do
     live_session :test do
-      Phoenix.LiveView.Router.live("/greets_the_world", LiveViewBindingTest.GreetsTheWorld)
+      Phoenix.LiveView.Router.live("/test", LiveViewBindingTest.TestLiveView)
     end
   end
 end

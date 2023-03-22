@@ -5,11 +5,18 @@ defmodule LiveViewBindingTest do
   import Phoenix.ConnTest
   import Phoenix.LiveViewTest
 
+  alias LiveViewBindingTest.Router.Helpers, as: Routes
+  alias LiveViewBindingTest.TestLiveView
+
   @endpoint LiveViewBindingTest.Endpoint
 
   test "greets the world" do
     conn = build_conn()
-    {:ok, _view, html} = live(conn, "/greets_the_world")
-    assert html =~ "hello world"
+    path = Routes.live_path(conn, TestLiveView, %{key: "value"})
+    {:ok, view, html} = live(conn, path)
+    assert html =~ "loader(key=value,"
+
+    send(view.pid, :hello)
+    assert render(view) =~ "updater(hello)"
   end
 end
