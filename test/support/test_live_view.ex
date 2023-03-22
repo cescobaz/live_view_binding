@@ -8,6 +8,7 @@ defmodule LiveViewBindingTest.TestLiveView do
     <div id="entity_a"><%= @entity_a %></div>
     <div id="entity_b"><%= @entity_b %></div>
     <div id="entity_c"><%= @entity_c %></div>
+    <div id="entity_d" phx-click="click_d"><%= @entity_d %></div>
     """
   end
 
@@ -33,5 +34,14 @@ defmodule LiveViewBindingTest.TestLiveView do
     mapper(fn socket ->
       (get_current_entity_c(socket) || 0) + 1
     end)
+  end
+
+  bind :entity_d do
+    default("default")
+    assigner()
+  end
+
+  def handle_event("click_d", _params, socket) do
+    {:noreply, assign_entity_d(socket, "click")}
   end
 end

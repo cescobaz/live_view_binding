@@ -118,8 +118,8 @@ defmodule LiveViewBinding do
 
   @doc false
   defmacro __bind__(module, key, do: block) do
-    Macro.expand(module, __CALLER__)
-    |> Module.put_attribute(:key, key)
+    module = Macro.expand(module, __CALLER__)
+    Module.put_attribute(module, :key, key)
 
     quote do
       unquote(block)
@@ -241,6 +241,36 @@ defmodule LiveViewBinding do
     quote do
       unquote(m).__bind_fn__ __MODULE__, "load_", :load_fns do
         unquote(m).__loader__(__MODULE__, unquote(loader_fn))
+      end
+    end
+  end
+
+  @doc false
+  defmacro __default_loader__(module, default_value) do
+    module = Macro.expand(module, __CALLER__)
+    key = Module.get_attribute(module, :key)
+    fn_name = Module.get_attribute(module, :fn_name)
+
+    quote do
+      def unquote(fn_name)(socket, params, uri \\ nil) do
+        resource =
+          if not Map.has_key?(socket.assigns, unquote(key)) do
+            unquote(default_value)
+          else
+            Map.get(socket.assigns, unquote(key))
+          end
+
+        Phoenix.Component.assign(socket, unquote(key), resource)
+      end
+    end
+  end
+
+  defmacro default(default_value) do
+    m = __MODULE__
+
+    quote do
+      unquote(m).__bind_fn__ __MODULE__, "default_loader_", :load_fns do
+        unquote(m).__default_loader__(__MODULE__, unquote(default_value))
       end
     end
   end

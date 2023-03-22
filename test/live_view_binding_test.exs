@@ -31,6 +31,10 @@ defmodule LiveViewBindingTest do
            |> element("#entity_c")
            |> render() =~ ">1<"
 
+    assert view
+           |> element("#entity_d")
+           |> render() =~ ">default<"
+
     send(view.pid, :hello)
 
     assert view
@@ -48,5 +52,13 @@ defmodule LiveViewBindingTest do
     assert view
            |> element("#entity_c")
            |> render() =~ ">2<"
+
+    assert view
+           |> element("#entity_d")
+           |> render() =~ ">default<"
+
+    assert view
+           |> element("#entity_d")
+           |> render_click() =~ ">click<"
   end
 end
